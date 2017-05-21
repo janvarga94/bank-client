@@ -1,7 +1,7 @@
 <div class="col-md-12">
 
 
-    <table  id="bankAccountsTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <table  id="currensiesTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
             <tr>
                 <th ng-repeat="(key, value) in header">{{value.label}}</th>
@@ -13,7 +13,7 @@
             </tr>
         </tfoot>
         <tbody>
-            <tr ng-repeat="(key, obj) in bankAccounts" ng-click="selectChanged(obj);">
+            <tr ng-repeat="(key, obj) in currensies" ng-click="selectChanged(obj);">
                 <td ng-repeat="(key2, property) in header">{{obj[property.code]}}</td>
             </tr>
         </tbody>
@@ -21,5 +21,3 @@
 
     </table>
 </div>
-
-<currensies></currensies>

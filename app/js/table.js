@@ -40,9 +40,9 @@ var Tabela = function (tableId) {
         var submit = $("<button class='btn btn-primary'>Add it!</button>");
         submit.on('click', function () {
             var addResponse = self.onAdd(newModel)
-            if(addResponse.success){
+            if (addResponse.success) {
                 dialogBackground.remove();
-            }else {
+            } else {
                 alert(addResponse.message);
             }
         });
@@ -86,7 +86,7 @@ var Tabela = function (tableId) {
         var submit = $("<button class='btn btn-primary'>Add it!</button>");
         submit.on('click', function () {
             var editResponse = self.onEdit(newModel)
-            if(editResponse.success){
+            if (editResponse.success) {
                 dialogBackground.remove();
             }
             else {
@@ -124,9 +124,21 @@ var Tabela = function (tableId) {
             }
         });
 
+        table.columns().every(function () {
+            var that = this;
+
+            $('input', this.footer()).on('keyup change', function () {
+                if (that.search() !== this.value) {
+                    that
+                        .search(this.value)
+                        .draw();
+                }
+            });
+        });
+
 
         if (this.onAdd) {
-            $("#bankAccountsTable_filter").prepend($('<button/>',
+            $('#' + this.tableId + "_filter").prepend($('<button/>',
                 {
                     text: 'Add',
                     class: "form-control",
@@ -136,28 +148,28 @@ var Tabela = function (tableId) {
         }
 
         if (this.onEdit) {
-            $("#bankAccountsTable_filter").prepend($('<button/>',
+            $('#' + this.tableId + "_filter").prepend($('<button/>',
                 {
                     text: 'Edit',
                     class: "form-control",
-                    click: function () {   openEditDialog();  }
+                    click: function () { openEditDialog(); }
                 }
             ))
         }
 
         if (this.onRemove) {
-            $("#bankAccountsTable_filter").prepend($('<button/>',
+            $('#' + this.tableId + "_filter").prepend($('<button/>',
                 {
                     text: 'Remove',
                     class: "form-control",
                     click: function () {
                         var removeResponse = self.onRemove()
-                        if(removeResponse.success){
+                        if (removeResponse.success) {
                             table.row('.selected').remove().draw(false);
                         }
                         else {
                             alert(removeResponse.message);
-                        }                       
+                        }
 
                     }
                 }
