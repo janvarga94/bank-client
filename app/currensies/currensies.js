@@ -2,15 +2,14 @@
 
 app.component('currensies', {
     templateUrl: 'currensies/currensies.html',
-    controller: ['$scope', '$http', function CurrensiesCtrl($scope, $http) {
-
+    controller: ['$scope', '$http', '$attrs', '$rootScope', function CurrensiesCtrl($scope, $http, $attrs, $rootScope) {
         $scope.currensies = [];
         $scope.selectedCurrensy = {};
 
         $scope.header = [
             { label: "Id", code: "id", manatory: false, type: "number" },
             { label: "Currensy Code", code: "currensyCode", manatory: false, type: "number" },
-            { label: "Name", code: "name", manatory: false, type: "string" },      
+            { label: "Name", code: "name", manatory: false, type: "string" },
         ];
 
         var tabela;
@@ -21,7 +20,7 @@ app.component('currensies', {
             tabela.onAdd = function (newCurrensy) {   //validiramo i vrami success ako se sme dodati novi red
                 pullCurrensiesAndRemakeDatatable();
                 return { success: true }
-                
+
             }
 
             tabela.onEdit = function (editedCurernsy) {
@@ -40,7 +39,7 @@ app.component('currensies', {
         var pullCurrensiesAndRemakeDatatable = function () {
             $http.get('/api/currensies.json').then(function successCallback(response) {
                 $scope.currensies = response.data;
-                setTimeout(generateDataTable,300);
+                setTimeout(generateDataTable, 300);
             }, function errorCallback(err) {
                 console.log(err);
             });
@@ -49,6 +48,15 @@ app.component('currensies', {
         pullCurrensiesAndRemakeDatatable();
 
         $scope.selectChanged = function (obj) {
+            if ($attrs.mode = "referenceChooser") {
+                $.event.trigger({
+                    type: "zoomChoosen",
+                    message: obj.id,
+                });
+                $.event.trigger({
+                    type: "zoomHide",
+                });
+            }
             $scope.selectedCurrensy = obj;
             tabela.selectedRow = $scope.selectedCurrensy;
         }

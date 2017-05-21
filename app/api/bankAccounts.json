@@ -3,8 +3,8 @@
         "id": 123,
         "accountNumber": 12532,
         "status": "asdfasdf",
-        "startDate": "1/1/2000",
-        "endDate": "2/2/2000",
+        "startDate": "01-01-2000",
+        "endDate": "02-02-2000",
         "bank": "gdfs",
         "currency": "1",
         "clientDetails": "1"
@@ -13,8 +13,8 @@
         "id":2345,
         "accountNumber": 12532,
         "status": "asdfasdf",
-        "startDate": "1/1/2000",
-        "endDate": "2/2/2000",
+        "startDate": "",
+        "endDate": "02-02-2000",
         "bank": "gdfs",
         "currency": "2",
         "clientDetails": "2"
@@ -23,8 +23,8 @@
         "id": 45465,
         "accountNumber": 12532,
         "status": "asdfasdf",
-        "startDate": "1/1/2000",
-        "endDate": "2/2/2000",
+        "startDate": "01-01-2000",
+        "endDate": "02-02-2000",
         "bank": "gdfs",
         "currency": "3",
         "clientDetails": "asdfas"
@@ -33,8 +33,8 @@
         "id": 45465,
         "accountNumber": 12532,
         "status": "asdfasdf",
-        "startDate": "1/1/2000",
-        "endDate": "2/2/2000",
+        "startDate": "01-01-2000",
+        "endDate": "02-02-2000",
         "bank": "gdfs",
         "currency": "4",
         "clientDetails": "asdfas"
