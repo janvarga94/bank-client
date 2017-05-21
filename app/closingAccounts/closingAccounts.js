@@ -1,23 +1,24 @@
 'use strict';
 
-app.component('currensies', {
-    templateUrl: 'currensies/currensies.html',
-    controller: ['$scope', '$http', '$attrs', '$rootScope', function CurrensiesCtrl($scope, $http, $attrs, $rootScope) {
-        $scope.currensies = [];
-        $scope.selectedCurrensy = {};
+app.component('closingAccounts', {
+    templateUrl: 'closingAccounts/closingAccounts.html',
+    controller: ['$scope', '$http', '$attrs', '$rootScope', function ClosingAccountsCtrl($scope, $http, $attrs, $rootScope) {
+        
+        $scope.closingAccounts = [];
 
         $scope.header = [
             { label: "Id", code: "id", manatory: false, type: "number" },
-            { label: "Currensy Code", code: "currensyCode", manatory: false, type: "number" },
-            { label: "Name", code: "name", manatory: false, type: "string" },
+            { label: "Switch to an account", code: "switchToAnAccount", manatory: false, type: "string" },
+            { label: "End date", code: "endDate", manatory: false, type: "number" },
+            { label: "Account", code: "account", manatory: false, type: "number", zoomClick: function () { $.event.trigger({ type: "bankAccountZoomShow" }) }  },
         ];
 
         var tabela;
         var generateDataTable = function () {
-            tabela = new Tabela("currensiesTable");
+            tabela = new Tabela("closingAccountsTable");
             tabela.header = $scope.header;
 
-            tabela.onAdd = function (newCurrensy) {   //validiramo i vrami success ako se sme dodati novi red
+            tabela.onAdd = function (newCurrensy) {   //validiramo i vrami success ako se sme dodati novi red      
                 return { success: true }
 
             }
@@ -34,13 +35,12 @@ app.component('currensies', {
         };
 
 
-        $http.get('/api/currensies.json').then(function successCallback(response) {
-            $scope.currensies = response.data;
+        $http.get('/api/closingAccounts.json').then(function successCallback(response) {
+            $scope.closingAccounts = response.data;
             setTimeout(generateDataTable, 300);
         }, function errorCallback(err) {
             console.log(err);
         });
-
 
 
         $scope.selectChanged = function (obj) {

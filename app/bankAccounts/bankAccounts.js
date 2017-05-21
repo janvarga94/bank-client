@@ -6,7 +6,6 @@ app.directive('bankAccounts', function () {
         controller: ['$scope', '$http', '$attrs', function BankAccoutnsCtrl($scope, $http, $attrs) {
 
             $scope.bankAccounts = [];
-            $scope.selectedBankAccount = {};
 
             $scope.header = [
                 { label: "Id", code: "id", manatory: false, type: "number" },
@@ -15,7 +14,7 @@ app.directive('bankAccounts', function () {
                 { label: "Start Date", code: "startDate", manatory: false, type: "date" },
                 { label: "End  Date", code: "endDate", manatory: false, type: "date" },
                 { label: "Bank", code: "bank", manatory: false, type: "number" },
-                { label: "Currency", code: "currency", manatory: false, type: "string", zoomClick : function(){ $.event.trigger({type: "currensiesZoomShow"})}},
+                { label: "Currency", code: "currency", manatory: false, type: "string", zoomClick: function () { $.event.trigger({ type: "currensiesZoomShow" }) } },
                 { label: "Client", code: "client", manatory: false, type: "number" },
             ];
 
@@ -39,17 +38,25 @@ app.directive('bankAccounts', function () {
 
                 tabela.generate();
             };
-           
+
             $http.get('/api/bankAccounts.json').then(function successCallback(response) {
                 $scope.bankAccounts = response.data;
                 setTimeout(generateDataTable, 300);
             }, function errorCallback(err) {
                 console.log(err);
             });
-  
+
             $scope.selectChanged = function (obj) {
-                $scope.selectedBankAccount = obj;
-                $.event.trigger({type: "rowSelected", message: obj});
+                $.event.trigger({ type: "rowSelected", message: obj });
+                if ($attrs.mode = "referenceChooser") {
+                    $.event.trigger({
+                        type: "zoomChoosen",
+                        message: obj.id,
+                    });
+                    $.event.trigger({
+                        type: "zoomHide",
+                    });
+                }
             }
 
         }]

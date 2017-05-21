@@ -10,7 +10,7 @@ var Tabela = function (tableId) {
 
     var self = this;
 
-    $(document).on("rowSelected", function (ev) { self.selectedRow = ev.message });
+    $(document).on("rowSelected", function (ev) { self.selectedRow = ev.message; });
 
     var openAddDialog = function () {
         var dialogBackground = $("<div onclick=\"$(this).remove()\" style='position: fixed; width:100%; height:100%; background-color:rgba(100,100,100,0.5); z-index:100;'></div>");
@@ -37,7 +37,9 @@ var Tabela = function (tableId) {
             formGroup.append(label);
             formGroup.append(input);
 
+           
             if (value.zoomClick) {
+                 console.log(value.zoomClick)
                 var zoomButton = $("<button class='btn btn-primary'>..</button>");
                 zoomButton.on('click', function () {
                     if (value.zoomClick)
