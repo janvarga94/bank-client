@@ -11,10 +11,12 @@ app.component('currensies', {
             { label: "Currensy Code", code: "currensyCode", manatory: false, type: "number" },
             { label: "Name", code: "name", manatory: false, type: "string" },
         ];
-
+        
+        $scope.tabelaId = "currensiesTable" + Math.floor(Math.random()*10000000);
+        
         var tabela;
         var generateDataTable = function () {
-            tabela = new Tabela("currensiesTable");
+            tabela = new Tabela($scope.tabelaId);
             tabela.header = $scope.header;
 
             tabela.onAdd = function (newCurrensy) {   //validiramo i vrami success ako se sme dodati novi red

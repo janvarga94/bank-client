@@ -9,9 +9,8 @@ var app = angular.module('myApp', [
 ]).
 config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.hashPrefix('!');
- /*    routeProvider.when("/bankAccounts", {
-        templateUrl : "bankAccounts/bankAccounts.html",
-        controller : "bankAccountsCtrl"
-    });*/
-   $routeProvider.otherwise({redirectTo: '/view1'});
+     $routeProvider.when("/login", {
+        template : "<login></login>",
+    });
+   $routeProvider.otherwise({redirectTo: '/'});
 }]);

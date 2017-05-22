@@ -13,9 +13,11 @@ app.component('closingAccounts', {
             { label: "Account", code: "account", manatory: false, type: "number", zoomClick: function () { $.event.trigger({ type: "bankAccountZoomShow" }) }  },
         ];
 
+        $scope.tabelaId = "closingAccountsTable" + Math.floor(Math.random()*10000000);
+
         var tabela;
         var generateDataTable = function () {
-            tabela = new Tabela("closingAccountsTable");
+            tabela = new Tabela($scope.tabelaId);
             tabela.header = $scope.header;
 
             tabela.onAdd = function (newCurrensy) {   //validiramo i vrami success ako se sme dodati novi red      

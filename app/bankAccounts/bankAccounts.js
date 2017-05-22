@@ -18,10 +18,11 @@ app.directive('bankAccounts', function () {
                 { label: "Client", code: "client", manatory: false, type: "number" },
             ];
 
+            $scope.tabelaId = "bankAccountsTable" + Math.floor(Math.random()*10000000);
 
             var tabela;
             var generateDataTable = function () {
-                tabela = new Tabela("bankAccountsTable");
+                tabela = new Tabela($scope.tabelaId);
                 tabela.header = $scope.header;
 
                 tabela.onAdd = function (newBankAccount) {   //validiramo i vrami success ako se sme dodati novi red
