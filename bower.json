@@ -1,18 +1,22 @@
 {
-  "name": "angular-seed",
-  "description": "A starter project for AngularJS",
-  "version": "0.0.0",
-  "homepage": "https://github.com/angular/angular-seed",
+  "name": "bank-client 4 real",
+  "authors": [
+    "janvarga94 <janvarg94@gmail.com>"
+  ],
+  "description": "",
+  "main": "index.html",
   "license": "MIT",
-  "private": true,
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
   "dependencies": {
-    "angular": "~1.5.0",
-    "angular-route": "~1.5.0",
-    "angular-loader": "~1.5.0",
-    "angular-mocks": "~1.5.0",
-    "html5-boilerplate": "^5.3.0",
-    "bootstrap": "^3.3.7",
-    "datatables.net": "^1.10.15",
-    "datatables.net-bs": "^2.1.1"
+    "angular": "^1.6.4",
+    "angular-route": "^1.6.4",
+    "bootstrap": "^3.3.7"
   }
 }

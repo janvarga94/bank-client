@@ -1,26 +1,70 @@
 <div class="col-md-12">
-
-
-    <table id="{{tabelaId}}" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <table class="table table-bordered" cellspacing="0" width="100%">
         <thead>
             <tr>
-                <th ng-repeat="(key, value) in header">{{value.label}}</th>
+                <th ng-click="setOrdering(head.code)" ng-repeat="head in header">{{head.label}} <span class="glyphicon glyphicon-chevron-right"></span></th>
+            </tr>
+            <tr>
+                <th ng-repeat="head in header;"><input class="form-control" type="text" ng-model="filters[head.code]" placeholder="search {{head.label}}"></th>
             </tr>
         </thead>
-        <tfoot>
-            <tr>
-                <th ng-repeat="(key, value) in header">{{value.label}}</th>
-            </tr>
-        </tfoot>
         <tbody>
-            <tr ng-repeat="(key, obj) in bankAccounts" ng-click="selectChanged(obj);">
-                <td ng-repeat="(key2, property) in header">{{obj[property.code]}}</td>
+            <tr ng-class="row == selected? 'selectedRow' : ''" ng-click="setSelected(row)" ng-if="showRow(row) && $index >= minShow && $index < maxShow" ng-repeat="row in rows  | orderBy:('-' + ordering) track by $index">
+                <td ng-repeat="head in header">{{row[head.code]}} </td>
             </tr>
         </tbody>
+    </table>
+    <button style="margin-left:10px;" ng-click="changeMinMaxShow($index)" class="btn btn-success" ng-repeat="_ in getPageCount() track by $index">{{$index + 1}}</button>
+</div>
+
+<div style="margin-top:10px;" class="col-md-12">
+    <div class="form-inline">
+        <div ng-repeat="head in header" class="form-group">
+            <label for="{{head.code}}">{{head.label}}:</label>
+            <input type="{{head.type}}" class="form-control" ng-model="editing[head.code]" id="{{head.code}}">
+        </div>
+    </div>
+</div>
+
+<div style="margin-top:10px;" class="col-md-6">
+    <button ng-if="allowAdd" class="btn btn-success" ng-click="doAdd()">Add New</button>
+    <button ng-if="allowEdit" class="btn btn-primary" ng-click="doEdit()">Save Edit</button>
+    <button ng-if="allowRemove" class="btn btn-warning" ng-click="doRemove()">Remove Selected</button>
+</div>
+
+
+
+<!--
+<div class="col-md-12">
+
+
+    <table ng-table="tableParams" show-filter="true" class="table" cellspacing="0" width="100%">
+        <tr ng-repeat="row in $data">
+            <td title="'Id'" filter="{ id: 'text'}" sortable="'id'">
+                {{row.id}}</td>
+            <td title="'Account Number'" filter="{ accountNumber: 'number'}" sortable="'accountNumber'">
+                {{row.accountNumber}}</td>
+            <td title="'Status'" filter="{ status: 'text'}" sortable="'status'">
+                {{row.status}}</td>
+            <td title="'Start date'" filter="{ startDate: 'number'}" sortable="'startDate'">
+                {{row.startDate}}</td>
+            <td title="'End date'" filter="{ endDate: 'text'}" sortable="'endDate'">
+                {{row.endDate}}</td>
+            <td title="'Bank'" filter="{ bank: 'number'}" sortable="'bank'">
+                {{row.bank}}</td>
+
+        </tr>
 
 
     </table>
 </div>
 
-
-<currensies-dialog></currensies-dialog>
+<table ng-table="tableParams" class="table" show-filter="true">
+    <tr ng-repeat="user in $data">
+        <td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
+            {{user.name}}</td>
+        <td title="'Age'" filter="{ age: 'number'}" sortable="'age'">
+            {{user.age}}</td>
+    </tr>
+</table>
+-->

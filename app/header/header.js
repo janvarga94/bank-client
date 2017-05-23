@@ -1,7 +1,7 @@
 'use strict';
 
-app.component('heeeader', {
-    templateUrl: 'header/header.html',
+app.component('ourHeader', {
+    templateUrl: 'app/header/header.html',
     controller: function HeaderController() {
      
     }});

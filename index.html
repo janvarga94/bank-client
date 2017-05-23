@@ -1,0 +1,35 @@
+<html lang="en" ng-app="myApp">
+
+<head>
+    <meta charset="utf-8">
+    <title>Banka</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="app/app.css">
+    <link rel="stylesheet"; href="https://unpkg.com/ng-table@2.0.2/bundles/ng-table.min.css">
+
+
+</head>
+
+<body>
+    <our-header></our-header>
+
+    <div class="container">
+        <div ng-view></div>
+    </div>
+
+    <bank-accounts></bank-accounts>
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="https://unpkg.com/ng-table@2.0.2/bundles/ng-table.min.js"></script>
+
+    <script src="app/app.js"></script>
+    <script src="app/header/header.js"></script>
+    <script src="app/otvaranjeRacuna/otvaranjeRacuna.js"></script>
+    <script src="app/bankAccounts/bankAccounts.js"></script>
+
+</body>
+
+</html>
