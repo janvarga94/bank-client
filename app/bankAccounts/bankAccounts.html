@@ -10,7 +10,7 @@
         </thead>
         <tbody>
             <tr ng-class="row == selected? 'selectedRow' : ''" ng-click="setSelected(row)" ng-if="showRow(row) && $index >= minShow && $index < maxShow" ng-repeat="row in rows  | orderBy:('-' + ordering) track by $index">
-                <td ng-repeat="head in header">{{row[head.code]}} </td>
+                <td ng-repeat="head in header">{{row[head.code]}}</td>
             </tr>
         </tbody>
     </table>
@@ -22,6 +22,7 @@
         <div ng-repeat="head in header" class="form-group">
             <label for="{{head.code}}">{{head.label}}:</label>
             <input type="{{head.type}}" class="form-control" ng-model="editing[head.code]" id="{{head.code}}">
+             <span ng-if="head.isReference"><button ng-click="head.openDialog()" class="btn">..</button></span> 
         </div>
     </div>
 </div>
@@ -34,37 +35,4 @@
 
 
 
-<!--
-<div class="col-md-12">
-
-
-    <table ng-table="tableParams" show-filter="true" class="table" cellspacing="0" width="100%">
-        <tr ng-repeat="row in $data">
-            <td title="'Id'" filter="{ id: 'text'}" sortable="'id'">
-                {{row.id}}</td>
-            <td title="'Account Number'" filter="{ accountNumber: 'number'}" sortable="'accountNumber'">
-                {{row.accountNumber}}</td>
-            <td title="'Status'" filter="{ status: 'text'}" sortable="'status'">
-                {{row.status}}</td>
-            <td title="'Start date'" filter="{ startDate: 'number'}" sortable="'startDate'">
-                {{row.startDate}}</td>
-            <td title="'End date'" filter="{ endDate: 'text'}" sortable="'endDate'">
-                {{row.endDate}}</td>
-            <td title="'Bank'" filter="{ bank: 'number'}" sortable="'bank'">
-                {{row.bank}}</td>
-
-        </tr>
-
-
-    </table>
-</div>
-
-<table ng-table="tableParams" class="table" show-filter="true">
-    <tr ng-repeat="user in $data">
-        <td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
-            {{user.name}}</td>
-        <td title="'Age'" filter="{ age: 'number'}" sortable="'age'">
-            {{user.age}}</td>
-    </tr>
-</table>
--->
+<closing-accounts ng-class="IsCurrensyDialogOpened != true ? 'hide' : ''" iamdialog="true"></closing-accounts>

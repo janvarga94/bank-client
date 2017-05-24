@@ -1,0 +1,39 @@
+<div class="row" ng-class="iamdialog == true? 'dialogBackground' : ''">
+
+    <div ng-class="iamdialog == true? 'dialog' : ''" class="col-md-12">
+        <table class="table table-bordered" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th ng-click="setOrdering(head.code)" ng-repeat="head in header">{{head.label}} <span class="glyphicon glyphicon-chevron-right"></span></th>
+                </tr>
+                <tr>
+                    <th ng-repeat="head in header;"><input class="form-control" type="text" ng-model="filters[head.code]" placeholder="search {{head.label}}"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-class="row == selected? 'selectedRow' : ''" ng-click="setSelected(row)" ng-if="showRow(row) && $index >= minShow && $index < maxShow"
+                    ng-repeat="row in rows  | orderBy:('-' + ordering) track by $index">
+                    <td ng-repeat="head in header">{{row[head.code]}} </td>
+                </tr>
+            </tbody>
+        </table>
+        <button style="margin-left:10px;" ng-click="changeMinMaxShow($index)" class="btn btn-success" ng-repeat="_ in getPageCount() track by $index">{{$index + 1}}</button>
+    </div>
+
+    <div style="margin-top:10px;" class="col-md-12">
+        <div class="form-inline">
+            <div ng-repeat="head in header" class="form-group">
+                <label for="{{head.code}}">{{head.label}}:</label>
+                <input type="{{head.type}}" class="form-control" ng-model="editing[head.code]" id="{{head.code}}">
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:10px;" class="col-md-6">
+        <button ng-if="allowAdd" class="btn btn-success" ng-click="doAdd()">Add New</button>
+        <button ng-if="allowEdit" class="btn btn-primary" ng-click="doEdit()">Save Edit</button>
+        <button ng-if="allowRemove" class="btn btn-warning" ng-click="doRemove()">Remove Selected</button>
+    </div>
+
+
+</div>

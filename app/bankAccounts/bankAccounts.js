@@ -3,7 +3,7 @@
 app.directive('bankAccounts', function () {
     return {
         templateUrl: 'app/bankAccounts/bankAccounts.html',
-        controller: ['$scope', '$http', '$attrs', 'NgTableParams', '$timeout', function BankAccoutnsCtrl($scope, $http, $attrs, NgTableParams, $timeout) {
+        controller: ['$scope', '$http', '$attrs','$timeout','$rootScope', function BankAccoutnsCtrl($scope, $http, $attrs, $timeout,$rootScope) {
 
             $scope.rows = [];
             $scope.selected = {};
@@ -20,7 +20,7 @@ app.directive('bankAccounts', function () {
                 { label: "Start Date", code: "startDate", type: "text" },
                 { label: "End  Date", code: "endDate", type: "text" },
                 { label: "Bank", code: "bank", type: "text" },
-                { label: "Currency", code: "currency", type: "text", zoomClick: function () { $.event.trigger({ type: "currensiesZoomShow" }) } },
+                { label: "Currency", code: "currency", type: "text", isReference: true, openDialog: () => $scope.IsCurrensyDialogOpened = true },
                 { label: "Client", code: "client", type: "text" },
             ];
 
@@ -43,9 +43,14 @@ app.directive('bankAccounts', function () {
                 $scope.rows.splice($scope.rows.indexOf($scope.selected), 1);
             }
 
+            //-------------------------------------> zoom <--------------------------------------------------------------------------
 
+            $scope.IsCurrensyDialogOpened = false;
 
-
+            $rootScope.$on('CLOSING_ACCOUNT_SELECTED', function(event,row){
+                $scope.editing['currency'] = row['id']
+                $scope.IsCurrensyDialogOpened = false;
+            });
 
 
             //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
