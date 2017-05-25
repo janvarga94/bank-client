@@ -1,7 +1,9 @@
 # bank-client
 
-commands:
+init command:
 
  - bower install 
   
- - npm start
+start commang: 
+ 
+ - node main.js
