@@ -10,6 +10,15 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
         template : "<login></login>",
     }).when("/otvaranjeRacuna", {
         template : "<otvaranje-racuna></otvaranje-racuna>",
-    });;
+    }).when("/bankAccounts", {
+        template : "<bank-accounts></bank-accounts>",
+    }).when("/currensies", {
+        template : "<currensies></currensies>",
+    }).when("/closingAccounts", {
+        template : "<closing-accounts></closing-accounts>",
+    }).when("/", {
+        template : "<welcome-page></welcome-page>",
+    });
    $routeProvider.otherwise({redirectTo: '/'});
 }]);
+

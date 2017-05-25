@@ -1,17 +1,17 @@
 [
     {
         "id" : 1,
-        "currensyCode" : "asdf",
+        "currensyCode" : 5634,
         "name" : "hfdsfdg"
     },
     {
         "id" : 2,
-        "currensyCode" : "asdf",
+        "currensyCode" : 312,
         "name" : "hfdsfdg"
     },
     {
         "id" : 3,
-        "currensyCode" : "asdf",
+        "currensyCode" : 3453,
         "name" : "hfdsfdg"
     }
 ]

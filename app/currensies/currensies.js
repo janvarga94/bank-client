@@ -1,27 +1,26 @@
 'use strict';
 
-app.component('closingAccounts', {
-    templateUrl: 'app/closingAccounts/closingAccounts.html',
-    controller: ['$scope', '$http', '$attrs', '$rootScope', function ClosingAccountsCtrl($scope, $http, $attrs, $rootScope) {
+app.component('currensies', {
+    templateUrl: 'app/currensies/currensies.html',
+    controller: ['$scope', '$http', '$attrs', '$rootScope', function CurrensiesCtrl($scope, $http, $attrs, $rootScope) {
 
         $scope.rows = [];
         $scope.selected = {};
         $scope.editing = {};
         $scope.setSelected = function (row) {
             if ($attrs.iamdialog)
-                $rootScope.$broadcast('CLOSING_ACCOUNT_SELECTED', row);
+                $rootScope.$broadcast('CURRENSY_SELECTED', row);
             $scope.selected = row;
             $scope.editing = JSON.parse(JSON.stringify(row));
         }
-        
+
         $scope.header = [
-            { label: "Id", code: "id", manatory: false, type: "text" },
-            { label: "Switch to an account", code: "switchToAnAccount", manatory: false, type: "text" },
-            { label: "End date", code: "endDate", manatory: false, type: "text" },
-            { label: "Bank Account", code: "bankAccount", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankAccountsDialogOpened = true },
+            { label: "Id", code: "id", manatory: false, type: "number" },
+            { label: "Currensy Code", code: "currensyCode", manatory: false, type: "number" },
+            { label: "Name", code: "name", manatory: false, type: "string" },
         ];
 
-        $http.get('/api/closingAccounts.json').then(function successCallback(response) {
+        $http.get('/api/currensies.json').then(function successCallback(response) {
             //TODO convert dates
             $scope.rows = response.data;
         });
@@ -42,16 +41,6 @@ app.component('closingAccounts', {
 
 
         $scope.iamdialog = $attrs.iamdialog == 'true';
-
-        //-------------------------------------> zoom <--------------------------------------------------------------------------
-
-        $scope.IsBankAccountsDialogOpened = false;
-
-        $rootScope.$on('BANK_ACCOUNT_SELECTED', function (event, row) {
-            console.log("setting bank account")
-            $scope.editing['bankAccount'] = row['id']
-            $scope.IsBankAccountsDialogOpened = false;
-        });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
 
@@ -82,6 +71,7 @@ app.component('closingAccounts', {
             $scope.minShow = $index * $scope.pageRows;
             $scope.maxShow = ($index + 1) * $scope.pageRows;
         }
+
 
     }]
 });
