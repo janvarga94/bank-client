@@ -4,6 +4,6 @@ init command:
 
  - bower install 
   
-start commang: 
+run app: 
  
  - node main.js
