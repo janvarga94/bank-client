@@ -11,18 +11,18 @@ app.component('closingAccounts', {
             if ($attrs.iamdialog)
                 $rootScope.$broadcast('CLOSING_ACCOUNT_SELECTED', row);
             $scope.selected = row;
-            $scope.editing = JSON.parse(JSON.stringify(row));
+            $scope.editing = $.extend({}, row);   
         }
-        
+
         $scope.header = [
             { label: "Id", code: "id", manatory: false, type: "text" },
             { label: "Switch to an account", code: "switchToAnAccount", manatory: false, type: "text" },
-            { label: "End date", code: "endDate", manatory: false, type: "text" },
+            { label: "End date", code: "endDate", manatory: false, type: "date" },
             { label: "Bank Account", code: "bankAccount", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankAccountsDialogOpened = true },
         ];
 
         $http.get('/api/closingAccounts.json').then(function successCallback(response) {
-            //TODO convert dates
+            $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
         });
 

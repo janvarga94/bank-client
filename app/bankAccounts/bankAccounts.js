@@ -11,22 +11,22 @@ app.component('bankAccounts', {
             if ($attrs.iamdialog)
                 $rootScope.$broadcast('BANK_ACCOUNT_SELECTED', row);
             $scope.selected = row;
-            $scope.editing = JSON.parse(JSON.stringify(row));
+            $scope.editing = $.extend({}, row);
         }
 
         $scope.header = [
             { label: "Id", code: "id", type: "text" },
             { label: "Account Number", code: "accountNumber", type: "text" },
             { label: "Status", code: "status", type: "text" },
-            { label: "Start Date", code: "startDate", type: "text" },
-            { label: "End  Date", code: "endDate", type: "text" },
+            { label: "Start Date", code: "startDate", type: "date" },
+            { label: "End  Date", code: "endDate", type: "date" },
             { label: "Bank", code: "bank", type: "text" },
             { label: "Currency", code: "currency", type: "text", isReference: true, openDialog: () => $scope.IsCurrensyDialogOpened = true },
             { label: "Client Details", code: "clientDetails", type: "text", isReference: true, openDialog: () => $scope.IsClientDetailsDialogOpened = true },
         ];
 
         $http.get('/api/bankAccounts.json').then(function successCallback(response) {
-            //TODO convert dates
+            $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
         });
 

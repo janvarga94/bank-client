@@ -11,7 +11,9 @@ app.component('currensies', {
             if ($attrs.iamdialog)
                 $rootScope.$broadcast('CURRENSY_SELECTED', row);
             $scope.selected = row;
-            $scope.editing = JSON.parse(JSON.stringify(row));
+            rowClone = $.extend({}, row);
+            rowClone = $scope.header.filter(h => h.type == "date").forEach(h => rowClone[h.code] = new Date(rowClone[h.code]));  //conver strings to dates where needed
+            $scope.editing = rowClone;
         }
 
         $scope.header = [
@@ -21,7 +23,7 @@ app.component('currensies', {
         ];
 
         $http.get('/api/currensies.json').then(function successCallback(response) {
-            //TODO convert dates
+            $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
         });
 
