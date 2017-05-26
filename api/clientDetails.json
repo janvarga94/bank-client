@@ -1,0 +1,19 @@
+[
+    {
+        "id" : 1,
+        "jmbg" : "jmbg",
+        "firstName" : "hfdsfdg",
+        "lastName" : "hfdsfdg",
+        "address" : "hfdsfdg",
+        "email" : "hfdsfdg",
+        "phoneNumber" : "hfdsfdg"
+    }, {
+        "id" : 2,
+        "jmbg" : "jmbg",
+        "firstName" : "hfdsfdg",
+        "lastName" : "hfdsfdg",
+        "address" : "hfdsfdg",
+        "email" : "hfdsfdg",
+        "phoneNumber" : "hfdsfdg"
+    }
+]

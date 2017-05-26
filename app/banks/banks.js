@@ -1,26 +1,28 @@
 'use strict';
 
-app.component('currensies', {
-    templateUrl: 'app/currensies/currensies.html',
-    controller: ['$scope', '$http', '$attrs', '$rootScope', function CurrensiesCtrl($scope, $http, $attrs, $rootScope) {
+app.component('banks', {
+    templateUrl: 'app/banks/banks.html',
+    controller: ['$scope', '$http', '$attrs', '$rootScope', function BanksCtrl($scope, $http, $attrs, $rootScope) {
 
         $scope.rows = [];
         $scope.selected = {};
         $scope.editing = {};
         $scope.setSelected = function (row) {
             if ($attrs.iamdialog)
-                $rootScope.$broadcast('CURRENSY_SELECTED', row);
+                $rootScope.$broadcast('BANK_SELECTED', row);
             $scope.selected = row;
             $scope.editing = $.extend({}, row);  
         }
 
         $scope.header = [
             { label: "Id", code: "id", manatory: false, type: "number" },
-            { label: "Currensy Code", code: "currensyCode", manatory: false, type: "number" },
+            { label: "Bank code", code: "bankCode", manatory: false, type: "number" },
             { label: "Name", code: "name", manatory: false, type: "string" },
+            { label: "Swift code", code: "swiftCode", manatory: false, type: "string" },
+            { label: "Billing account", code: "billingAccount", manatory: false, type: "string" },
         ];
 
-        $http.get('/api/currensies.json').then(function successCallback(response) {
+        $http.get('/api/banks.json').then(function successCallback(response) {
             $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
         });

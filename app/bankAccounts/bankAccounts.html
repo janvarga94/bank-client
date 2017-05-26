@@ -13,7 +13,7 @@
             <tbody>
                 <tr ng-class="row == selected? 'selectedRow' : ''" ng-click="setSelected(row)" ng-if="showRow(row) && $index >= minShow && $index < maxShow"
                     ng-repeat="row in rows  | orderBy:('-' + ordering) track by $index">
-                    <td ng-repeat="head in header">{{row[head.code]}}</td>
+                    <td ng-repeat="head in header">{{row[head.code] | ifDateFormatFilter}}</td>
                 </tr>
             </tbody>
         </table>
@@ -42,3 +42,4 @@
 
 
 <currensies ng-class="IsCurrensyDialogOpened != true ? 'hide' : ''" iamdialog="true"></currensies>
+<client-details ng-class="IsClientDetailsDialogOpened != true ? 'hide' : ''" iamdialog="true"></client-details>

@@ -1,0 +1,26 @@
+[
+    {
+        "id" : 1,
+        "transferDate": "2014-12-12",
+        "amount": 4124,
+        "bankMessage": 5,
+        "senderBank": 5,
+        "recipientBank": 5
+    },
+     {
+        "id" : 7,
+        "transferDate": "2014-12-12",
+        "amount": 4124,
+        "bankMessage": 5,
+        "senderBank": 5,
+        "recipientBank": 5
+    },
+     {
+        "id" : 5,
+        "transferDate": "2014-12-12",
+        "amount": 4124,
+        "bankMessage": 5,
+        "senderBank": 5,
+        "recipientBank": 5
+    }
+]

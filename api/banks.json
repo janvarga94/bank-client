@@ -1,0 +1,15 @@
+[
+    {
+        "id" : 1,
+        "bankCode" : "jmbg",
+        "name" : "hfdsfdg",
+        "swiftCode" : "hfdsfdg",
+        "billingAccount" : "hfdsfdg"
+    },   {
+        "id" : 54,
+        "bankCode" : "jmbg",
+        "name" : "hfdsfdg",
+        "swiftCode" : "hfdsfdg",
+        "billingAccount" : "hfdsfdg"
+    }
+]

@@ -1,26 +1,30 @@
 'use strict';
 
-app.component('currensies', {
-    templateUrl: 'app/currensies/currensies.html',
-    controller: ['$scope', '$http', '$attrs', '$rootScope', function CurrensiesCtrl($scope, $http, $attrs, $rootScope) {
+app.component('clientDetails', {
+    templateUrl: 'app/clientDetails/clientDetails.html',
+    controller: ['$scope', '$http', '$attrs', '$rootScope', function ClientDetailsCtrl($scope, $http, $attrs, $rootScope) {
 
         $scope.rows = [];
         $scope.selected = {};
         $scope.editing = {};
         $scope.setSelected = function (row) {
             if ($attrs.iamdialog)
-                $rootScope.$broadcast('CURRENSY_SELECTED', row);
+                $rootScope.$broadcast('CLIENT_DETAILS_SELECTED', row);
             $scope.selected = row;
-            $scope.editing = $.extend({}, row);  
+            $scope.editing = $.extend({}, row);   
         }
 
         $scope.header = [
             { label: "Id", code: "id", manatory: false, type: "number" },
-            { label: "Currensy Code", code: "currensyCode", manatory: false, type: "number" },
-            { label: "Name", code: "name", manatory: false, type: "string" },
+            { label: "JMBG", code: "jmbg", manatory: false, type: "text" },
+            { label: "First name", code: "firstName", manatory: false, type: "text" },
+            { label: "Last name", code: "lastName", manatory: false, type: "text" },
+            { label: "Address", code: "address", manatory: false, type: "text" },
+            { label: "Email", code: "email", manatory: false, type: "email" },
+            { label: "Phone number", code: "phoneNumber", manatory: false, type: "text" },
         ];
 
-        $http.get('/api/currensies.json').then(function successCallback(response) {
+        $http.get('/api/clientDetails.json').then(function successCallback(response) {
             $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
         });
@@ -41,6 +45,7 @@ app.component('currensies', {
 
 
         $scope.iamdialog = $attrs.iamdialog == 'true';
+
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
 
@@ -71,7 +76,6 @@ app.component('currensies', {
             $scope.minShow = $index * $scope.pageRows;
             $scope.maxShow = ($index + 1) * $scope.pageRows;
         }
-
 
     }]
 });

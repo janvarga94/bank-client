@@ -56,6 +56,11 @@ app.component('bankAccounts', {
             $scope.IsCurrensyDialogOpened = false;
         });
 
+        $rootScope.$on('CLIENT_DETAILS_SELECTED', function (event, row) {
+            $scope.editing['clientDetails'] = row['id']
+            $scope.IsClientDetailsDialogOpened = false;
+        });
+
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
 
