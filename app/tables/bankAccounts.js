@@ -1,30 +1,32 @@
 'use strict';
 
-app.component('dailyAccountBalances', {
-    templateUrl: 'app/dailyAccountBalances/dailyAccountBalances.html',
-    controller: ['$scope', '$http', '$attrs', '$rootScope', function DailtyAccountsBCtrl($scope, $http, $attrs, $rootScope) {
+app.component('bankAccounts', {
+    templateUrl: 'app/commonTemplates/defaultTable.html',
+    controller: ['$scope', '$http', '$attrs', '$timeout', '$rootScope', '$element', '$compile', function BankAccoutnsCtrl($scope, $http, $attrs, $timeout, $rootScope, $element, $compile) {
 
         $scope.rows = [];
         $scope.selected = {};
         $scope.editing = {};
         $scope.setSelected = function (row) {
             if ($attrs.iamdialog)
-                $rootScope.$broadcast('DAILY_ACCOUNT_BALANCE_SELECTED', row);
+                $rootScope.$broadcast('BANK_ACCOUNT_SELECTED', row);      
             $scope.selected = row;
-            $scope.editing = $.extend({}, row);   
+            $scope.editing = $.extend({}, row);
         }
 
+
         $scope.header = [
-            { label: "Id", code: "id", manatory: false, type: "text" },
-            { label: "Date", code: "date", manatory: false, type: "date" },
-            { label: "Previous state", code: "previousState", manatory: false, type: "number" },
-            { label: "Amount charged", code: "amountCharged", manatory: false, type: "number" },
-            { label: "Amount in favour", code: "amountInFavour", manatory: false, type: "number" },
-            { label: "New State", code: "newState", manatory: false, type: "number" },
-            { label: "Bank Account", code: "bankAccount", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankAccountsDialogOpened = true },
+            { label: "Id", code: "id", type: "text" },
+            { label: "Account Number", code: "accountNumber", type: "text" },
+            { label: "Status", code: "status", type: "text" },
+            { label: "Start Date", code: "startDate", type: "date" },
+            { label: "End  Date", code: "endDate", type: "date" },
+            { label: "Bank", code: "bank", type: "text" },
+            { label: "Currency", code: "currency", type: "text", isReference: true, openDialog: () => $scope.IsCurrensyDialogOpened = true },
+            { label: "Client Details", code: "clientDetails", type: "text", isReference: true, openDialog: () => $scope.IsClientDetailsDialogOpened = true },
         ];
 
-        $http.get('/api/dailyAccountBalances.json').then(function successCallback(response) {
+        $http.get('/api/bankAccounts.json').then(function successCallback(response) {
             $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
         });
@@ -43,17 +45,36 @@ app.component('dailyAccountBalances', {
             $scope.rows.splice($scope.rows.indexOf($scope.selected), 1);
         }
 
-
         $scope.iamdialog = $attrs.iamdialog == 'true';
 
         //-------------------------------------> zoom <--------------------------------------------------------------------------
 
-        $scope.IsBankAccountsDialogOpened = false;
+        $element.append(
+            $compile(
+                "<currensies ng-if='!iamdialog && IsCurrensyDialogOpened' iamdialog='true'></currensies>"
+            )($scope)
+        );
+        $element.append(
+            $compile(
+                "<client-details ng-if='!iamdialog && IsClientDetailsDialogOpened' iamdialog='true'></client-details>"
+            )($scope)
+        );
 
-        $rootScope.$on('BANK_ACCOUNT_SELECTED', function (event, row) {
-            $scope.editing['bankAccount'] = row['id']
-            $scope.IsBankAccountsDialogOpened = false;
+        $scope.IsCurrensyDialogOpened = false;
+        $scope.IsClientDetailsDialogOpened = false;
+
+        $rootScope.$on('CURRENSY_SELECTED', function (event, row) {
+            if (row['id'])
+                $scope.editing['currency'] = row['id']
+            $scope.IsCurrensyDialogOpened = false;
         });
+
+        $rootScope.$on('CLIENT_DETAILS_SELECTED', function (event, row) {
+            if (row['id'])
+                $scope.editing['clientDetails'] = row['id']
+            $scope.IsClientDetailsDialogOpened = false;
+        });
+
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
 
@@ -84,6 +105,5 @@ app.component('dailyAccountBalances', {
             $scope.minShow = $index * $scope.pageRows;
             $scope.maxShow = ($index + 1) * $scope.pageRows;
         }
-
     }]
 });

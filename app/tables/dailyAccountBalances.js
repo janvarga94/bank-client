@@ -1,26 +1,30 @@
 'use strict';
 
-app.component('transferItems', {
-    templateUrl: 'app/transferItems/transferItems.html',
-    controller: ['$scope', '$http', '$attrs', '$rootScope', function TransferItemssCtrl($scope, $http, $attrs, $rootScope) {
+app.component('dailyAccountBalances', {
+    templateUrl: 'app/commonTemplates/defaultTable.html',
+    controller: ['$scope', '$http', '$attrs', '$rootScope', '$compile', '$element', function DailtyAccountsBCtrl($scope, $http, $attrs, $rootScope, $compile, $element) {
 
         $scope.rows = [];
         $scope.selected = {};
         $scope.editing = {};
         $scope.setSelected = function (row) {
             if ($attrs.iamdialog)
-                $rootScope.$broadcast('TRANSFER_ITEM_SELECTED', row);
+                $rootScope.$broadcast('DAILY_ACCOUNT_BALANCE_SELECTED', row);
             $scope.selected = row;
-            $scope.editing = $.extend({}, row);   
+            $scope.editing = $.extend({}, row);
         }
 
         $scope.header = [
             { label: "Id", code: "id", manatory: false, type: "text" },
-            { label: "Interbank Transfer", code: "interbankTransfer", manatory: false, type: "number", isReference: true, openDialog: () => $scope.IsInterbankTransferDialogOpened = true },
-            { label: "Bank Order", code: "bankOrder", manatory: false, type: "number", isReference: true, openDialog: () => $scope.IsBankOrderDialogOpened = true },
+            { label: "Date", code: "date", manatory: false, type: "date" },
+            { label: "Previous state", code: "previousState", manatory: false, type: "number" },
+            { label: "Amount charged", code: "amountCharged", manatory: false, type: "number" },
+            { label: "Amount in favour", code: "amountInFavour", manatory: false, type: "number" },
+            { label: "New State", code: "newState", manatory: false, type: "number" },
+            { label: "Bank Account", code: "bankAccount", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankAccountsDialogOpened = true },
         ];
 
-        $http.get('/api/transferItems.json').then(function successCallback(response) {
+        $http.get('/api/dailyAccountBalances.json').then(function successCallback(response) {
             $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
         });
@@ -44,16 +48,16 @@ app.component('transferItems', {
 
         //-------------------------------------> zoom <--------------------------------------------------------------------------
 
-        $scope.IsInterbankTransferDialogOpened = false;
-        $scope.IsBankOrderDialogOpened = false;
+        $element.append(
+            $compile(
+                "<bank-accounts ng-if='!iamdialog && IsBankAccountsDialogOpened' iamdialog='true'></bank-accounts>"
+            )($scope)
+        );
+        $scope.IsBankAccountsDialogOpened = false;
 
-        $rootScope.$on('INTERBANK_TRANSFER_SELECTED', function (event, row) {
-            $scope.editing['interbankTransfer'] = row['id']
-            $scope.IsInterbankTransferDialogOpened = false;
-        });
-        $rootScope.$on('BANK_ORDER_SELECTED', function (event, row) {
-            $scope.editing['bankOrder'] = row['id']
-            $scope.IsBankOrderDialogOpened = false;
+        $rootScope.$on('BANK_ACCOUNT_SELECTED', function (event, row) {
+            if (row['id']) $scope.editing['bankAccount'] = row['id']
+            $scope.IsBankAccountsDialogOpened = false;
         });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------

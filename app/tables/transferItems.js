@@ -1,29 +1,26 @@
 'use strict';
 
-app.component('interbankTransfers', {
-    templateUrl: 'app/interbankTransfers/interbankTransfers.html',
-    controller: ['$scope', '$http', '$attrs', '$rootScope', function InterbankTrCtrl($scope, $http, $attrs, $rootScope) {
+app.component('transferItems', {
+    templateUrl: 'app/commonTemplates/defaultTable.html',
+    controller: ['$scope', '$http', '$attrs', '$rootScope', '$compile', '$element', function TransferItemssCtrl($scope, $http, $attrs, $rootScope, $compile, $element) {
 
         $scope.rows = [];
         $scope.selected = {};
         $scope.editing = {};
         $scope.setSelected = function (row) {
             if ($attrs.iamdialog)
-                $rootScope.$broadcast('INTERBANK_TRANSFER_SELECTED', row);
+                $rootScope.$broadcast('TRANSFER_ITEM_SELECTED', row);
             $scope.selected = row;
-            $scope.editing = $.extend({}, row);   
+            $scope.editing = $.extend({}, row);
         }
 
         $scope.header = [
             { label: "Id", code: "id", manatory: false, type: "text" },
-            { label: "Transfer Date", code: "transferDate", manatory: false, type: "date" },
-            { label: "Amount", code: "amount", manatory: false, type: "number" },
-            { label: "Bank Message", code: "bankMessage", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankMessageDialogOpened = true },
-            { label: "Sender bank", code: "senderBank", manatory: false, type: "text" },
-            { label: "Recipient bank", code: "recipientBank", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankDialogOpened = true },
+            { label: "Interbank Transfer", code: "interbankTransfer", manatory: false, type: "number", isReference: true, openDialog: () => $scope.IsInterbankTransferDialogOpened = true },
+            { label: "Bank Order", code: "bankOrder", manatory: false, type: "number", isReference: true, openDialog: () => $scope.IsBankOrderDialogOpened = true },
         ];
 
-        $http.get('/api/interbankTransfer.json').then(function successCallback(response) {
+        $http.get('/api/transferItems.json').then(function successCallback(response) {
             $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
         });
@@ -47,17 +44,26 @@ app.component('interbankTransfers', {
 
         //-------------------------------------> zoom <--------------------------------------------------------------------------
 
+        $element.append(
+            $compile(
+                "<bank-orders ng-if='!iamdialog && IsBankOrderDialogOpened' iamdialog='true' dialogvisible='IsBankAccountsDialogOpened'></bank-orders>"
+            )($scope)
+        ); $element.append(
+            $compile(
+                "<interbank-transfers ng-if='!iamdialog && IsInterbankTransferDialogOpened' iamdialog='true' dialogvisible='IsBankAccountsDialogOpened'></interbank-transfers>"
+            )($scope)
+        );
 
-        $scope.IsBankMessageDialogOpened = false;
-        $scope.IsBankDialogOpened = false;
+        $scope.IsInterbankTransferDialogOpened = false;
+        $scope.IsBankOrderDialogOpened = false;
 
-        $rootScope.$on('BANK_MESSAGE_SELECTED', function (event, row) {
-            $scope.editing['bankMessage'] = row['id']
-            $scope.IsBankMessageDialogOpened = false;
+        $rootScope.$on('INTERBANK_TRANSFER_SELECTED', function (event, row) {
+            if (row['id']) $scope.editing['interbankTransfer'] = row['id']
+            $scope.IsInterbankTransferDialogOpened = false;
         });
-        $rootScope.$on('BANK_SELECTED', function (event, row) {
-            $scope.editing['recipientBank'] = row['id']
-            $scope.IsBankDialogOpened = false;
+        $rootScope.$on('BANK_ORDER_SELECTED', function (event, row) {
+            if (row['id']) $scope.editing['bankOrder'] = row['id']
+            $scope.IsBankOrderDialogOpened = false;
         });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------

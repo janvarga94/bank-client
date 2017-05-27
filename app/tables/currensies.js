@@ -1,31 +1,26 @@
 'use strict';
 
-app.component('bankAccounts', {
-    templateUrl: 'app/bankAccounts/bankAccounts.html',
-    controller: ['$scope', '$http', '$attrs', '$timeout', '$rootScope', function BankAccoutnsCtrl($scope, $http, $attrs, $timeout, $rootScope) {
+app.component('currensies', {
+    templateUrl: 'app/commonTemplates/defaultTable.html',
+    controller: ['$scope', '$http', '$attrs', '$rootScope', function CurrensiesCtrl($scope, $http, $attrs, $rootScope) {
 
         $scope.rows = [];
         $scope.selected = {};
         $scope.editing = {};
         $scope.setSelected = function (row) {
             if ($attrs.iamdialog)
-                $rootScope.$broadcast('BANK_ACCOUNT_SELECTED', row);
+                $rootScope.$broadcast('CURRENSY_SELECTED', row);
             $scope.selected = row;
-            $scope.editing = $.extend({}, row);
+            $scope.editing = $.extend({}, row);  
         }
 
         $scope.header = [
-            { label: "Id", code: "id", type: "text" },
-            { label: "Account Number", code: "accountNumber", type: "text" },
-            { label: "Status", code: "status", type: "text" },
-            { label: "Start Date", code: "startDate", type: "date" },
-            { label: "End  Date", code: "endDate", type: "date" },
-            { label: "Bank", code: "bank", type: "text" },
-            { label: "Currency", code: "currency", type: "text", isReference: true, openDialog: () => $scope.IsCurrensyDialogOpened = true },
-            { label: "Client Details", code: "clientDetails", type: "text", isReference: true, openDialog: () => $scope.IsClientDetailsDialogOpened = true },
+            { label: "Id", code: "id", manatory: false, type: "number" },
+            { label: "Currensy Code", code: "currensyCode", manatory: false, type: "number" },
+            { label: "Name", code: "name", manatory: false, type: "string" },
         ];
 
-        $http.get('/api/bankAccounts.json').then(function successCallback(response) {
+        $http.get('/api/currensies.json').then(function successCallback(response) {
             $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
         });
@@ -44,23 +39,8 @@ app.component('bankAccounts', {
             $scope.rows.splice($scope.rows.indexOf($scope.selected), 1);
         }
 
+
         $scope.iamdialog = $attrs.iamdialog == 'true';
-
-        //-------------------------------------> zoom <--------------------------------------------------------------------------
-
-        $scope.IsCurrensyDialogOpened = false;
-        $scope.IsClientDetailsDialogOpened = false;
-
-        $rootScope.$on('CURRENSY_SELECTED', function (event, row) {
-            $scope.editing['currency'] = row['id']
-            $scope.IsCurrensyDialogOpened = false;
-        });
-
-        $rootScope.$on('CLIENT_DETAILS_SELECTED', function (event, row) {
-            $scope.editing['clientDetails'] = row['id']
-            $scope.IsClientDetailsDialogOpened = false;
-        });
-
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
 
@@ -91,5 +71,7 @@ app.component('bankAccounts', {
             $scope.minShow = $index * $scope.pageRows;
             $scope.maxShow = ($index + 1) * $scope.pageRows;
         }
+
+
     }]
 });
