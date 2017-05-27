@@ -1,28 +1,30 @@
 'use strict';
 
-app.component('closingAccounts', {
-    templateUrl: 'app/closingAccounts/closingAccounts.html',
-    controller: ['$scope', '$http', '$attrs', '$rootScope', function ClosingAccountsCtrl($scope, $http, $attrs, $rootScope) {
+app.component('dailyAccountBalances', {
+    templateUrl: 'app/dailyAccountBalances/dailyAccountBalances.html',
+    controller: ['$scope', '$http', '$attrs', '$rootScope', function DailtyAccountsBCtrl($scope, $http, $attrs, $rootScope) {
 
         $scope.rows = [];
         $scope.selected = {};
         $scope.editing = {};
         $scope.setSelected = function (row) {
             if ($attrs.iamdialog)
-                $rootScope.$broadcast('CLOSING_ACCOUNT_SELECTED', row);
+                $rootScope.$broadcast('DAILY_ACCOUNT_BALANCE_SELECTED', row);
             $scope.selected = row;
             $scope.editing = $.extend({}, row);   
         }
 
         $scope.header = [
             { label: "Id", code: "id", manatory: false, type: "text" },
-            { label: "Switch to an account", code: "switchToAnAccount", manatory: false, type: "text" },
-            { label: "End date", code: "endDate", manatory: false, type: "date" },
+            { label: "Date", code: "date", manatory: false, type: "date" },
+            { label: "Previous state", code: "previousState", manatory: false, type: "number" },
+            { label: "Amount charged", code: "amountCharged", manatory: false, type: "number" },
+            { label: "Amount in favour", code: "amountInFavour", manatory: false, type: "number" },
+            { label: "New State", code: "newState", manatory: false, type: "number" },
             { label: "Bank Account", code: "bankAccount", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankAccountsDialogOpened = true },
-            { label: "Bank Order", code: "bankOrder", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankOrderDialogOpened = true },
         ];
 
-        $http.get('/api/closingAccounts.json').then(function successCallback(response) {
+        $http.get('/api/dailyAccountBalances.json').then(function successCallback(response) {
             $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
         });
@@ -47,15 +49,10 @@ app.component('closingAccounts', {
         //-------------------------------------> zoom <--------------------------------------------------------------------------
 
         $scope.IsBankAccountsDialogOpened = false;
-        $scope.IsBankOrderOpened = false;
 
         $rootScope.$on('BANK_ACCOUNT_SELECTED', function (event, row) {
             $scope.editing['bankAccount'] = row['id']
             $scope.IsBankAccountsDialogOpened = false;
-        });
-        $rootScope.$on('BANK_ORDER_SELECTED', function (event, row) {
-            $scope.editing['bankOrder'] = row['id']
-            $scope.IsBankOrderDialogOpened = false;
         });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------

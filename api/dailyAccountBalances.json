@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "date" : "10-10-2012",
+        "previousState": 1,
+        "amountCharged": 1,
+        "amountInFavour": 1,
+        "newState": 1,
+        "bankAccount": 1
+    },
+    {
+        "id": 54,
+        "date" : "10-10-2012",
+        "previousState": 1,
+        "amountCharged": 1,
+        "amountInFavour": 1,
+        "newState": 1,
+        "bankAccount": 1
+    },
+    {
+        "id": 897,
+        "date" : "10-10-2012",
+        "previousState": 1,
+        "amountCharged": 1,
+        "amountInFavour": 1,
+        "newState": 1,
+        "bankAccount": 1
+    }
+]

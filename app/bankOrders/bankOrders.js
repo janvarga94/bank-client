@@ -1,29 +1,40 @@
 'use strict';
 
-app.component('interbankTransfer', {
-    templateUrl: 'app/interbankTransfer/interbankTransfer.html',
-    controller: ['$scope', '$http', '$attrs', '$rootScope', function InterbankTrCtrl($scope, $http, $attrs, $rootScope) {
+app.component('bankOrders', {
+    templateUrl: 'app/bankOrders/bankOrders.html',
+    controller: ['$scope', '$http', '$attrs', '$rootScope', function OrdersCtrl($scope, $http, $attrs, $rootScope) {
 
         $scope.rows = [];
         $scope.selected = {};
         $scope.editing = {};
         $scope.setSelected = function (row) {
             if ($attrs.iamdialog)
-                $rootScope.$broadcast('INTERBANK_TRANSFER_SELECTED', row);
+                $rootScope.$broadcast('BANK_ORDER_SELECTED', row);
             $scope.selected = row;
             $scope.editing = $.extend({}, row);   
         }
 
         $scope.header = [
             { label: "Id", code: "id", manatory: false, type: "text" },
-            { label: "Transfer Date", code: "transferDate", manatory: false, type: "date" },
+            { label: "Bank order date", code: "bankOrderDate", manatory: false, type: "date" },
+            { label: "Direction", code: "direction", manatory: false, type: "text" },
+            { label: "Debtor", code: "debtor", manatory: false, type: "text" },
+            { label: "Purpose of payment", code: "purposeOfPayment", manatory: false, type: "text" },
+            { label: "Recipient", code: "recipient", manatory: false, type: "text" },
+            { label: "Order date", code: "orderDate", manatory: false, type: "date" },
+            { label: "Currensy date", code: "currensyDate", manatory: false, type: "date" },
+            { label: "First account", code: "firstAccount", manatory: false, type: "text" },
+            { label: "First model", code: "firstModel", manatory: false, type: "text" },
+            { label: "First number", code: "firstNumber", manatory: false, type: "text" },
+            { label: "Secont account", code: "secondAccount", manatory: false, type: "text" },
+            { label: "Second model", code: "secondModel", manatory: false, type: "text" },
+            { label: "Second number", code: "secondNumber", manatory: false, type: "text" },
             { label: "Amount", code: "amount", manatory: false, type: "number" },
-            { label: "Bank Message", code: "bankMessage", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankMessageDialogOpened = true },
-            { label: "Sender bank", code: "senderBank", manatory: false, type: "text" },
-            { label: "Recipient bank", code: "recipientBank", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankDialogOpened = true },
+            { label: "Urgently", code: "urgently", manatory: false, type: "checkbox" },
+            { label: "Daily account balance", code: "dailyAccountBalance", manatory: false, type: "number", isReference: true, openDialog: () => $scope.IsDailyAccountBalanceDialogOpened = true  },
         ];
 
-        $http.get('/api/interbankTransfer.json').then(function successCallback(response) {
+        $http.get('/api/bankOrders.json').then(function successCallback(response) {
             $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
         });
@@ -47,17 +58,11 @@ app.component('interbankTransfer', {
 
         //-------------------------------------> zoom <--------------------------------------------------------------------------
 
+        $scope.IsDailyAccountBalanceDialogOpened = false;
 
-        $scope.IsBankMessageDialogOpened = false;
-        $scope.IsBankDialogOpened = false;
-
-        $rootScope.$on('BANK_MESSAGE_SELECTED', function (event, row) {
-            $scope.editing['bankMessage'] = row['id']
-            $scope.IsBankMessageDialogOpened = false;
-        });
-        $rootScope.$on('BANK_SELECTED', function (event, row) {
-            $scope.editing['recipientBank'] = row['id']
-            $scope.IsBankDialogOpened = false;
+        $rootScope.$on('DAILY_ACCOUNT_BALANCE_SELECTED', function (event, row) {
+            $scope.editing['dailyAccountBalance'] = row['id']
+            $scope.IsDailyAccountBalanceDialogOpened = false;
         });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------

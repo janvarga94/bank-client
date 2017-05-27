@@ -22,8 +22,14 @@ var app = angular.module('myApp', [
             template: "<client-details></client-details>",
         }).when("/banks", {
             template: "<banks></banks>",
-        }).when("/interbankTransfer", {
-            template: "<interbank-transfer></interbank-transfer>",
+        }).when("/interbankTransfers", {
+            template: "<interbank-transfers></interbank-transfers>",
+        }).when("/bankOrders", {
+            template: "<bank-orders></bank-orders>",
+        }).when("/transferItems", {
+            template: "<transfer-items></transfer-items>",
+        }).when("/dailyAccountBalances", {
+            template: "<daily-account-balances></daily-account-balances>",
         }).when("/", {
             template: "<welcome-page></welcome-page>",
         });

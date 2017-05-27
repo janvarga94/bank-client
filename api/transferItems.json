@@ -1,0 +1,17 @@
+[
+    {
+        "id" : 123,
+        "interbankTransfer" : 654,
+        "bankOrder" : 766
+    },
+    {
+        "id" : 123,
+        "interbankTransfer" : 654,
+        "bankOrder" : 766
+    },
+    {
+        "id" : 8979,
+        "interbankTransfer" : 654,
+        "bankOrder" : 766
+    }
+]
