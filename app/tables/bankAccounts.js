@@ -21,39 +21,76 @@ app.component('bankAccounts', {
             { label: "Status", code: "status", type: "text" },
             { label: "Start Date", code: "startDate", type: "date" },
             { label: "End  Date", code: "endDate", type: "date" },
-            { label: "Bank", code: "bank", type: "text" },
+            { label: "Bank", code: "bank", type: "text", isReference: true, openDialog: () => $scope.openDialog('banks') },
             { label: "Currency", code: "currency", type: "text", isReference: true, openDialog: () => $scope.openDialog('currensies') },
-            { label: "Client Details", code: "clientDetails", type: "text", isReference: true, openDialog: () => $scope.openDialog('client-details') },
+            { label: "Client Details", code: "client", type: "text", isReference: true, openDialog: () => $scope.openDialog('client-details') },
         ];
 
-        $http.get('/api/bankAccounts.json').then(function successCallback(response) {
+        $http.get(appConfig.apiUrl + 'accounts').then(function successCallback(response) {
+            console.log(response.data);
             $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
+        },function err(e){
+            console.log(e);
         });
 
         $scope.allowAdd = true; $scope.allowEdit = true; $scope.allowRemove = true;
         $scope.doAdd = function () {
-            $scope.rows.push(JSON.parse(JSON.stringify($scope.editing)));
+            $http.post(appConfig.apiUrl + 'accounts', $scope.editing).then(function successCallback(response) {
+                var row = response.data;
+                if (row) {
+                    $scope.header.filter(h => h.type == "date").forEach(h => row[h.code] = new Date(row[h.code]));  //conver strings to dates where needed
+                    $scope.rows.push(row);
+                    toastr.success('Added successfuly.')
+                }
+            }, function err(e) {
+                toastr.error("Can't add sorry.")
+            });
         }
 
         $scope.doEdit = function () {
-            $scope.rows.splice($scope.rows.indexOf($scope.selected), 1);
-            $scope.rows.push($scope.editing);
+            if ($scope.selected.id) {
+                $http.post(appConfig.apiUrl + 'accounts', $scope.editing).then(function successCallback(response) {
+                    var row = response.data;
+                    if (row) {
+                        $scope.header.filter(h => h.type == "date").forEach(h => row[h.code] = new Date(row[h.code]));  //conver strings to dates where needed
+                        $scope.rows.splice($scope.rows.indexOf($scope.selected), 1);
+                        $scope.rows.push(row);
+                        toastr.success('Edited successfuly.')
+                    }
+                }, function err(e) {
+                    toastr.error("Can't edit sorry.")
+                });
+            } else {
+                toastr.info('Select row first.')
+            }
+
         }
 
         $scope.doRemove = function () {
-            $scope.rows.splice($scope.rows.indexOf($scope.selected), 1);
+            if ($scope.selected.id) {
+                $http.delete(appConfig.apiUrl + 'accounts/' + $scope.selected.id).then(function successCallback(response) {
+
+                    $scope.rows.splice($scope.rows.indexOf($scope.selected), 1);
+                    toastr.success('Removed successfuly.')
+
+                }, function err(e) {
+                    toastr.error("Can't remove sorry.")
+                });
+            } else {
+                toastr.info('Select row first.')
+            }
         }
 
         $scope.iamdialog = $attrs.iamdialog == 'true';
 
         //-------------------------------------> zoom <--------------------------------------------------------------------------
-       
-        
+
+
         $scope.openDialog = function (tagName, id) {
             if (id) {
                 $scope.dialog = $compile(
-                    "<" + tagName + ' ' +  "filterid='"+id+"'  iamdialog='true'></" + tagName + ">"
+                    "<" + tagName + ' ' + "filterid='" + id + "'  iamdialog='true'></" + tagName + ">"
                 )($scope);
             } else {
                 $scope.dialog = $compile(
@@ -66,12 +103,20 @@ app.component('bankAccounts', {
 
         $scope.zoomSingleLine = function (code, row) {
             if (code == 'currency') {
-               $scope.openDialog('currensies',row[code]);
+                $scope.openDialog('currensies', row[code]);
             }
             if (code == 'clientDetails') {
-              $scope.openDialog('client-details',row[code]);
+                $scope.openDialog('client-details', row[code]);
+            } if (code == 'bank') {
+                $scope.openDialog('client-details', row[code]);
             }
         };
+
+        $rootScope.$on('BANK_SELECTED', function (event, row) {
+            if (row['id'])
+                $scope.editing['bank'] = row['id']
+            $scope.dialog.remove();
+        });
 
         $rootScope.$on('CURRENSY_SELECTED', function (event, row) {
             if (row['id'])

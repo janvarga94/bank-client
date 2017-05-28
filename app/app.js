@@ -36,3 +36,6 @@ var app = angular.module('myApp', [
         $routeProvider.otherwise({ redirectTo: '/' });
     }]);
 
+var appConfig = {
+    apiUrl : "http://localhost:10011/api/"
+};

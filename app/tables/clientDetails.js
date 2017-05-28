@@ -20,27 +20,61 @@ app.component('clientDetails', {
             { label: "First name", code: "firstName", manatory: false, type: "text" },
             { label: "Last name", code: "lastName", manatory: false, type: "text" },
             { label: "Address", code: "address", manatory: false, type: "text" },
-            { label: "Email", code: "email", manatory: false, type: "email" },
+            { label: "Email", code: "email", manatory: false, type: "text" },
             { label: "Phone number", code: "phoneNumber", manatory: false, type: "text" },
         ];
 
-        $http.get('/api/clientDetails.json').then(function successCallback(response) {
+        $http.get(appConfig.apiUrl + 'clients').then(function successCallback(response) {
             $scope.header.filter(h => h.type == "date").forEach(h => response.data.forEach(row => row[h.code] = new Date(row[h.code])));  //conver strings to dates where needed
             $scope.rows = response.data;
         });
 
         $scope.allowAdd = true; $scope.allowEdit = true; $scope.allowRemove = true;
         $scope.doAdd = function () {
-            $scope.rows.push(JSON.parse(JSON.stringify($scope.editing)));
+            $http.post(appConfig.apiUrl + 'clients', $scope.editing).then(function successCallback(response) {
+                var row = response.data;
+                if (row) {
+                    $scope.header.filter(h => h.type == "date").forEach(h => row[h.code] = new Date(row[h.code]));  //conver strings to dates where needed
+                    $scope.rows.push(row);
+                    toastr.success('Added successfuly.')
+                }
+            }, function err(e) {
+                toastr.error("Can't add sorry.")
+            });
         }
 
         $scope.doEdit = function () {
-            $scope.rows.splice($scope.rows.indexOf($scope.selected), 1);
-            $scope.rows.push($scope.editing);
+            if ($scope.selected.id) {
+                $http.post(appConfig.apiUrl + 'clients', $scope.editing).then(function successCallback(response) {
+                    var row = response.data;
+                    if (row) {
+                        $scope.header.filter(h => h.type == "date").forEach(h => row[h.code] = new Date(row[h.code]));  //conver strings to dates where needed
+                        $scope.rows.splice($scope.rows.indexOf($scope.selected), 1);
+                        $scope.rows.push(row);
+                        toastr.success('Edited successfuly.')
+                    }
+                }, function err(e) {
+                    toastr.error("Can't edit sorry.")
+                });
+            } else {
+                toastr.info('Select row first.')
+            }
+
         }
 
         $scope.doRemove = function () {
-            $scope.rows.splice($scope.rows.indexOf($scope.selected), 1);
+            if ($scope.selected.id) {
+                $http.delete(appConfig.apiUrl + 'clients/' + $scope.selected.id).then(function successCallback(response) {
+
+                    $scope.rows.splice($scope.rows.indexOf($scope.selected), 1);
+                    toastr.success('Removed successfuly.')
+
+                }, function err(e) {
+                    toastr.error("Can't remove sorry.")
+                });
+            } else {
+                toastr.info('Select row first.')
+            }
         }
 
 
