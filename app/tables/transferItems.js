@@ -16,8 +16,8 @@ app.component('transferItems', {
 
         $scope.header = [
             { label: "Id", code: "id", manatory: false, type: "text" },
-            { label: "Interbank Transfer", code: "interbankTransfer", manatory: false, type: "number", isReference: true, openDialog: () => $scope.IsInterbankTransferDialogOpened = true },
-            { label: "Bank Order", code: "bankOrder", manatory: false, type: "number", isReference: true, openDialog: () => $scope.IsBankOrderDialogOpened = true },
+            { label: "Interbank Transfer", code: "interbankTransfer", manatory: false, type: "number", isReference: true, openDialog: () => $scope.openDialog('interbank-transfers') },
+            { label: "Bank Order", code: "bankOrder", manatory: false, type: "number", isReference: true, openDialog: () => $scope.openDialog('bank-orders') },
         ];
 
         $http.get('/api/transferItems.json').then(function successCallback(response) {
@@ -44,33 +44,48 @@ app.component('transferItems', {
 
         //-------------------------------------> zoom <--------------------------------------------------------------------------
 
-        $element.append(
-            $compile(
-                "<bank-orders ng-if='!iamdialog && IsBankOrderDialogOpened' iamdialog='true' dialogvisible='IsBankAccountsDialogOpened'></bank-orders>"
-            )($scope)
-        ); $element.append(
-            $compile(
-                "<interbank-transfers ng-if='!iamdialog && IsInterbankTransferDialogOpened' iamdialog='true' dialogvisible='IsBankAccountsDialogOpened'></interbank-transfers>"
-            )($scope)
-        );
+         $scope.openDialog = function (tagName, id) {
+            if (id) {
+                $scope.dialog = $compile(
+                    "<" + tagName + ' ' +  "filterid='"+id+"'  iamdialog='true'></" + tagName + ">"
+                )($scope);
+            } else {
+                $scope.dialog = $compile(
+                    "<" + tagName + " iamdialog='true'></" + tagName + ">"
+                )($scope);
+            }
 
-        $scope.IsInterbankTransferDialogOpened = false;
-        $scope.IsBankOrderDialogOpened = false;
+            $element.append($scope.dialog);
+        }
+
+        $scope.zoomSingleLine = function (code, row) {
+            if (code == 'interbankTransfer') {
+               $scope.openDialog('interbank-transfers',row[code]);
+            }
+            if (code == 'bankOrder') {
+              $scope.openDialog('bank-orders',row[code]);
+            }
+        };
 
         $rootScope.$on('INTERBANK_TRANSFER_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['interbankTransfer'] = row['id']
-            $scope.IsInterbankTransferDialogOpened = false;
+            $scope.dialog.remove();
         });
         $rootScope.$on('BANK_ORDER_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['bankOrder'] = row['id']
-            $scope.IsBankOrderDialogOpened = false;
+            $scope.dialog.remove();
         });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
 
         $scope.filters = {};
+        $scope.filterId = $attrs.filterid;
+
         $scope.showRow = function (row) {
+            if ($scope.filterId && $scope.filterId.toString() != row['id'].toString())  //if zoom on one entity
+                return false;
             for (var code in $scope.filters) {
+
                 if (row[code] && $scope.filters[code] && row[code].toString().indexOf($scope.filters[code].toString()) < 0)
                     return false;
             }

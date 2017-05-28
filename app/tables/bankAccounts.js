@@ -3,13 +3,13 @@
 app.component('bankAccounts', {
     templateUrl: 'app/commonTemplates/defaultTable.html',
     controller: ['$scope', '$http', '$attrs', '$timeout', '$rootScope', '$element', '$compile', function BankAccoutnsCtrl($scope, $http, $attrs, $timeout, $rootScope, $element, $compile) {
-
+        var ctrl = this;
         $scope.rows = [];
         $scope.selected = {};
         $scope.editing = {};
         $scope.setSelected = function (row) {
             if ($attrs.iamdialog)
-                $rootScope.$broadcast('BANK_ACCOUNT_SELECTED', row);      
+                $rootScope.$broadcast('BANK_ACCOUNT_SELECTED', row);
             $scope.selected = row;
             $scope.editing = $.extend({}, row);
         }
@@ -22,8 +22,8 @@ app.component('bankAccounts', {
             { label: "Start Date", code: "startDate", type: "date" },
             { label: "End  Date", code: "endDate", type: "date" },
             { label: "Bank", code: "bank", type: "text" },
-            { label: "Currency", code: "currency", type: "text", isReference: true, openDialog: () => $scope.IsCurrensyDialogOpened = true },
-            { label: "Client Details", code: "clientDetails", type: "text", isReference: true, openDialog: () => $scope.IsClientDetailsDialogOpened = true },
+            { label: "Currency", code: "currency", type: "text", isReference: true, openDialog: () => $scope.openDialog('currensies') },
+            { label: "Client Details", code: "clientDetails", type: "text", isReference: true, openDialog: () => $scope.openDialog('client-details') },
         ];
 
         $http.get('/api/bankAccounts.json').then(function successCallback(response) {
@@ -48,39 +48,54 @@ app.component('bankAccounts', {
         $scope.iamdialog = $attrs.iamdialog == 'true';
 
         //-------------------------------------> zoom <--------------------------------------------------------------------------
+       
+        
+        $scope.openDialog = function (tagName, id) {
+            if (id) {
+                $scope.dialog = $compile(
+                    "<" + tagName + ' ' +  "filterid='"+id+"'  iamdialog='true'></" + tagName + ">"
+                )($scope);
+            } else {
+                $scope.dialog = $compile(
+                    "<" + tagName + " iamdialog='true'></" + tagName + ">"
+                )($scope);
+            }
 
-        $element.append(
-            $compile(
-                "<currensies ng-if='!iamdialog && IsCurrensyDialogOpened' iamdialog='true'></currensies>"
-            )($scope)
-        );
-        $element.append(
-            $compile(
-                "<client-details ng-if='!iamdialog && IsClientDetailsDialogOpened' iamdialog='true'></client-details>"
-            )($scope)
-        );
+            $element.append($scope.dialog);
+        }
 
-        $scope.IsCurrensyDialogOpened = false;
-        $scope.IsClientDetailsDialogOpened = false;
+        $scope.zoomSingleLine = function (code, row) {
+            if (code == 'currency') {
+               $scope.openDialog('currensies',row[code]);
+            }
+            if (code == 'clientDetails') {
+              $scope.openDialog('client-details',row[code]);
+            }
+        };
 
         $rootScope.$on('CURRENSY_SELECTED', function (event, row) {
             if (row['id'])
                 $scope.editing['currency'] = row['id']
-            $scope.IsCurrensyDialogOpened = false;
+            $scope.dialog.remove();
         });
 
         $rootScope.$on('CLIENT_DETAILS_SELECTED', function (event, row) {
             if (row['id'])
                 $scope.editing['clientDetails'] = row['id']
-            $scope.IsClientDetailsDialogOpened = false;
+            $scope.dialog.remove();
         });
 
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
 
         $scope.filters = {};
+        $scope.filterId = $attrs.filterid;
+
         $scope.showRow = function (row) {
+            if ($scope.filterId && $scope.filterId.toString() != row['id'].toString())  //if zoom on one entity
+                return false;
             for (var code in $scope.filters) {
+
                 if (row[code] && $scope.filters[code] && row[code].toString().indexOf($scope.filters[code].toString()) < 0)
                     return false;
             }

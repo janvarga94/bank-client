@@ -45,8 +45,13 @@ app.component('bankMessages', {
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
 
         $scope.filters = {};
+        $scope.filterId = $attrs.filterid;
+
         $scope.showRow = function (row) {
+            if ($scope.filterId && $scope.filterId.toString() != row['id'].toString())  //if zoom on one entity
+                return false;
             for (var code in $scope.filters) {
+
                 if (row[code] && $scope.filters[code] && row[code].toString().indexOf($scope.filters[code].toString()) < 0)
                     return false;
             }

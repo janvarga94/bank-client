@@ -8,8 +8,10 @@ app.component('closingAccounts', {
         $scope.selected = {};
         $scope.editing = {};
         $scope.setSelected = function (row) {
-            if ($attrs.iamdialog)
+            if ($attrs.iamdialog) {
                 $rootScope.$broadcast('CLOSING_ACCOUNT_SELECTED', row);
+
+            }
             $scope.selected = row;
             $scope.editing = $.extend({}, row);
         }
@@ -18,8 +20,8 @@ app.component('closingAccounts', {
             { label: "Id", code: "id", manatory: false, type: "text" },
             { label: "Switch to an account", code: "switchToAnAccount", manatory: false, type: "text" },
             { label: "End date", code: "endDate", manatory: false, type: "date" },
-            { label: "Bank Account", code: "bankAccount", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankAccountsDialogOpened = true },
-            { label: "Bank Order", code: "bankOrder", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankOrderDialogOpened = true },
+            { label: "Bank Account", code: "bankAccount", manatory: false, type: "text", isReference: true, openDialog: () => { $scope.openDialog('bank-accounts'); } },
+            { label: "Bank Order", code: "bankOrder", manatory: false, type: "text", isReference: true, openDialog: () => { $scope.openDialog('bank-orders'); } },
         ];
 
         $http.get('/api/closingAccounts.json').then(function successCallback(response) {
@@ -46,35 +48,48 @@ app.component('closingAccounts', {
 
         //-------------------------------------> zoom <--------------------------------------------------------------------------
 
-        $element.append(
-            $compile(
-                "<bank-accounts ng-if='!iamdialog && IsBankAccountsDialogOpened' iamdialog='true'></bank-accounts>"
-            )($scope)
-        );
-        $element.append(
-            $compile(
-                "<bank-orders ng-if='!iamdialog && IsBankOrderDialogOpened' iamdialog='true'></bank-orders>"
-            )($scope)
-        );
+        $scope.openDialog = function (tagName, id) {
+            if (id) {
+                $scope.dialog = $compile(
+                    "<" + tagName + ' ' +  "filterid='"+id+"'  iamdialog='true'></" + tagName + ">"
+                )($scope);
+            } else {
+                $scope.dialog = $compile(
+                    "<" + tagName + " iamdialog='true'></" + tagName + ">"
+                )($scope);
+            }
 
+            $element.append($scope.dialog);
+        }
 
-        $scope.IsBankAccountsDialogOpened = false;
-        $scope.IsBankOrderDialogOpened = false;
+        $scope.zoomSingleLine = function (code, row) {
+            if (code == 'bankAccount') {
+               $scope.openDialog('bank-accounts',row[code]);
+            }
+            if (code == 'bankOrder') {
+              $scope.openDialog('bank-orders',row[code]);
+            }
+        };
 
         $rootScope.$on('BANK_ACCOUNT_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['bankAccount'] = row['id']
-            $scope.IsBankAccountsDialogOpened = false;
+            $scope.dialog.remove();
         });
         $rootScope.$on('BANK_ORDER_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['bankOrder'] = row['id']
-            $scope.IsBankOrderDialogOpened = false;
+            $scope.dialog.remove();
         });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
 
         $scope.filters = {};
+        $scope.filterId = $attrs.filterid;
+
         $scope.showRow = function (row) {
+            if ($scope.filterId && $scope.filterId.toString() != row['id'].toString())  //if zoom on one entity
+                return false;
             for (var code in $scope.filters) {
+
                 if (row[code] && $scope.filters[code] && row[code].toString().indexOf($scope.filters[code].toString()) < 0)
                     return false;
             }

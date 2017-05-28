@@ -31,7 +31,7 @@ app.component('bankOrders', {
             { label: "Second number", code: "secondNumber", manatory: false, type: "text" },
             { label: "Amount", code: "amount", manatory: false, type: "number" },
             { label: "Urgently", code: "urgently", manatory: false, type: "checkbox" },
-            { label: "Daily account balance", code: "dailyAccountBalance", manatory: false, type: "number", isReference: true, openDialog: () => $scope.IsDailyAccountBalanceDialogOpened = true },
+            { label: "Daily account balance", code: "dailyAccountBalance", manatory: false, type: "number", isReference: true, openDialog: () =>$scope.openDialog('daily-account-balances') },
         ];
 
         $http.get('/api/bankOrders.json').then(function successCallback(response) {
@@ -58,24 +58,41 @@ app.component('bankOrders', {
 
         //-------------------------------------> zoom <--------------------------------------------------------------------------
 
-        $element.append(
-            $compile(
-                "<daily-account-balances ng-if='!iamdialog && IsDailyAccountBalanceDialogOpened' iamdialog='true'></daily-account-balances>"
-            )($scope)
-        );
+        $scope.openDialog = function (tagName, id) {
+            if (id) {
+                $scope.dialog = $compile(
+                    "<" + tagName + ' ' +  "filterid='"+id+"'  iamdialog='true'></" + tagName + ">"
+                )($scope);
+            } else {
+                $scope.dialog = $compile(
+                    "<" + tagName + " iamdialog='true'></" + tagName + ">"
+                )($scope);
+            }
 
-        $scope.IsDailyAccountBalanceDialogOpened = false;
+            $element.append($scope.dialog);
+        }
+
+        $scope.zoomSingleLine = function (code, row) {
+            if (code == 'dailyAccountBalance') {
+               $scope.openDialog('daily-account-balances',row[code]);
+            }
+        };
 
         $rootScope.$on('DAILY_ACCOUNT_BALANCE_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['dailyAccountBalance'] = row['id']
-            $scope.IsDailyAccountBalanceDialogOpened = false;
+            $scope.dialog.remove();
         });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
 
         $scope.filters = {};
+        $scope.filterId = $attrs.filterid;
+
         $scope.showRow = function (row) {
+            if ($scope.filterId && $scope.filterId.toString() != row['id'].toString())  //if zoom on one entity
+                return false;
             for (var code in $scope.filters) {
+
                 if (row[code] && $scope.filters[code] && row[code].toString().indexOf($scope.filters[code].toString()) < 0)
                     return false;
             }

@@ -3,18 +3,21 @@
         "id": 1,
         "switchToAnAccount": "yes yes",
         "endDate" : "10-10-2012",
-        "bankAccount": 1
+        "bankAccount": 1,
+        "bankOrder" : 1
     },
     {
         "id": 2,
         "switchToAnAccount": "yes yes",
         "endDate" : "10-10-2012",
-        "bankAccount": 2
+        "bankAccount": 2,
+        "bankOrder" : 1
     },
     {
         "id": 3,
         "switchToAnAccount": "yes yes",
         "endDate" : "10-10-2012",
-        "bankAccount": 3
+        "bankAccount": 3,
+        "bankOrder" : 2        
     }
 ]

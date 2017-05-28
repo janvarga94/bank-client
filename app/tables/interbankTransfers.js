@@ -18,9 +18,9 @@ app.component('interbankTransfers', {
             { label: "Id", code: "id", manatory: false, type: "text" },
             { label: "Transfer Date", code: "transferDate", manatory: false, type: "date" },
             { label: "Amount", code: "amount", manatory: false, type: "number" },
-            { label: "Bank Message", code: "bankMessage", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankMessageDialogOpened = true },
+            { label: "Bank Message", code: "bankMessage", manatory: false, type: "text", isReference: true, openDialog: () => $scope.openDialog('bank-messages') },
             { label: "Sender bank", code: "senderBank", manatory: false, type: "text" },
-            { label: "Recipient bank", code: "recipientBank", manatory: false, type: "text", isReference: true, openDialog: () => $scope.IsBankDialogOpened = true },
+            { label: "Recipient bank", code: "recipientBank", manatory: false, type: "text", isReference: true, openDialog: () => $scope.openDialog('banks') },
         ];
 
         $http.get('/api/interbankTransfer.json').then(function successCallback(response) {
@@ -47,34 +47,48 @@ app.component('interbankTransfers', {
 
         //-------------------------------------> zoom <--------------------------------------------------------------------------
 
-        $element.append(
-            $compile(
-                "<bank-messages ng-if='!iamdialog && IsBankMessageDialogOpened' iamdialog='true' dialogvisible='IsBankAccountsDialogOpened'></bank-messages>"
-            )($scope)
-        );
-        $element.append(
-            $compile(
-                "<banks ng-if='!iamdialog && IsBankDialogOpened' iamdialog='true' dialogvisible='IsBankAccountsDialogOpened'></banks>"
-            )($scope)
-        );
+        $scope.openDialog = function (tagName, id) {
+            if (id) {
+                $scope.dialog = $compile(
+                    "<" + tagName + ' ' +  "filterid='"+id+"'  iamdialog='true'></" + tagName + ">"
+                )($scope);
+            } else {
+                $scope.dialog = $compile(
+                    "<" + tagName + " iamdialog='true'></" + tagName + ">"
+                )($scope);
+            }
 
-        $scope.IsBankMessageDialogOpened = false;
-        $scope.IsBankDialogOpened = false;
+            $element.append($scope.dialog);
+        }
+
+        $scope.zoomSingleLine = function (code, row) {
+            if (code == 'bankMessage') {
+               $scope.openDialog('bank-messages',row[code]);
+            }
+            if (code == 'recipientBank') {
+              $scope.openDialog('banks',row[code]);
+            }
+        };
 
         $rootScope.$on('BANK_MESSAGE_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['bankMessage'] = row['id']
-            $scope.IsBankMessageDialogOpened = false;
+            $scope.dialog.remove();
         });
         $rootScope.$on('BANK_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['recipientBank'] = row['id']
-            $scope.IsBankDialogOpened = false;
+            $scope.dialog.remove();
         });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
 
         $scope.filters = {};
+        $scope.filterId = $attrs.filterid;
+
         $scope.showRow = function (row) {
+            if ($scope.filterId && $scope.filterId.toString() != row['id'].toString())  //if zoom on one entity
+                return false;
             for (var code in $scope.filters) {
+
                 if (row[code] && $scope.filters[code] && row[code].toString().indexOf($scope.filters[code].toString()) < 0)
                     return false;
             }

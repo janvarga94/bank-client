@@ -1,27 +1,27 @@
 <div class="row" ng-class="iamdialog == true? 'dialogBackground' : ''" ng-click="setSelected({})">
 
-    <div ng-class="iamdialog == true? 'dialog' : ''" class="col-md-12">
+    <div ng-class="iamdialog == true? 'dialog' : ''" class="col-md-12" ng-click="$event.stopPropagation();">
         <table class="table table-bordered" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th ng-click="setOrdering(head.code); $event.stopPropagation();" ng-repeat="head in header">{{head.label}} <span class="glyphicon glyphicon-chevron-right"></span></th>
+                    <th ng-click="setOrdering(head.code);" ng-repeat="head in header">{{head.label}} <span class="glyphicon glyphicon-chevron-right"></span></th>
                 </tr>
                 <tr>
-                    <th ng-repeat="head in header;"><input class="form-control" type="text" ng-model="filters[head.code]" placeholder="search {{head.label}}"></th>
+                    <th ng-if="!filterId" ng-repeat="head in header;"><input class="form-control" type="text" ng-model="filters[head.code]" placeholder="search {{head.label}}"></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-class="row == selected? 'selectedRow' : ''" ng-click="setSelected(row); $event.stopPropagation();" ng-if="showRow(row) && $index >= minShow && $index < maxShow"
+                <tr ng-class="row == selected? 'selectedRow' : ''" ng-click="setSelected(row)" ng-if="showRow(row) && $index >= minShow && $index < maxShow"
                     ng-repeat="row in rows  | orderBy:('-' + ordering) track by $index">
                     <td ng-repeat="head in header">{{row[head.code] | ifDateFormatFilter}}
                         <span ng-if="head.isReference">
-                            <button class="btn btn-sm btn-success">..</button>
+                            <button ng-click="zoomSingleLine(head.code,row)" class="btn btn-sm btn-success">..</button>
                         </span>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <button style="margin-left:10px;" ng-click="changeMinMaxShow($index); $event.stopPropagation();" class="btn btn-success" ng-repeat="_ in getPageCount() track by $index">{{$index + 1}}</button>
+        <button style="margin-left:10px;" ng-click="changeMinMaxShow($index)" class="btn btn-success" ng-repeat="_ in getPageCount() track by $index">{{$index + 1}}</button>
     </div>
 </div>
 
@@ -31,7 +31,7 @@
             <div ng-repeat="head in header" class="form-group">
                 <label for="{{head.code}}">{{head.label}}:</label>
                 <input type="{{head.type}}" class="form-control" ng-model="editing[head.code]" id="{{head.code}}">
-                <span ng-if="head.isReference"><button ng-click="head.openDialog()" class="btn">..</button></span>
+                <span ng-if="head.isReference"><button ng-click="filterId = null; head.openDialog()" class="btn">..</button></span>
             </div>
         </div>
     </div>
