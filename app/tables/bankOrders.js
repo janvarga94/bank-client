@@ -80,7 +80,7 @@ app.component('bankOrders', {
 
         $rootScope.$on('DAILY_ACCOUNT_BALANCE_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['dailyAccountBalance'] = row['id']
-            $scope.dialog.remove();
+            if($scope.dialog) $scope.dialog.remove();
         });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------

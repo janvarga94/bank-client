@@ -30,6 +30,8 @@ var app = angular.module('myApp', [
             template: "<transfer-items></transfer-items>",
         }).when("/dailyAccountBalances", {
             template: "<daily-account-balances></daily-account-balances>",
+        }).when("/workTypes", {
+            template: "<work-types></work-types>",
         }).when("/", {
             template: "<welcome-page></welcome-page>",
         });
@@ -37,5 +39,5 @@ var app = angular.module('myApp', [
     }]);
 
 var appConfig = {
-    apiUrl : "http://localhost:10011/api/"
+    apiUrl: "http://localhost:10011/api/"
 };

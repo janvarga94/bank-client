@@ -115,19 +115,19 @@ app.component('bankAccounts', {
         $rootScope.$on('BANK_SELECTED', function (event, row) {
             if (row['id'])
                 $scope.editing['bank'] = row['id']
-            $scope.dialog.remove();
+            if($scope.dialog) $scope.dialog.remove();
         });
 
         $rootScope.$on('CURRENSY_SELECTED', function (event, row) {
             if (row['id'])
                 $scope.editing['currency'] = row['id']
-            $scope.dialog.remove();
+            if($scope.dialog) $scope.dialog.remove();
         });
 
         $rootScope.$on('CLIENT_DETAILS_SELECTED', function (event, row) {
             if (row['id'])
                 $scope.editing['clientDetails'] = row['id']
-            $scope.dialog.remove();
+            if($scope.dialog) $scope.dialog.remove();
         });
 
 

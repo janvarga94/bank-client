@@ -15,7 +15,7 @@ app.component('dailyAccountBalances', {
         }
 
         $scope.header = [
-            { label: "Id", code: "id", manatory: false, type: "text" },
+            { label: "Id", code: "id", manatory: false, type: "number" },
             { label: "Date", code: "date", manatory: false, type: "date" },
             { label: "Previous state", code: "previousState", manatory: false, type: "number" },
             { label: "Amount charged", code: "amountCharged", manatory: false, type: "number" },
@@ -70,7 +70,7 @@ app.component('dailyAccountBalances', {
 
         $rootScope.$on('BANK_ACCOUNT_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['bankAccount'] = row['id']
-            $scope.dialog.remove();
+            if($scope.dialog) $scope.dialog.remove();
         });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------

@@ -15,7 +15,7 @@ app.component('interbankTransfers', {
         }
 
         $scope.header = [
-            { label: "Id", code: "id", manatory: false, type: "text" },
+            { label: "Id", code: "id", manatory: false, type: "number" },
             { label: "Transfer Date", code: "transferDate", manatory: false, type: "date" },
             { label: "Amount", code: "amount", manatory: false, type: "number" },
             { label: "Bank Message", code: "bankMessage", manatory: false, type: "text", isReference: true, openDialog: () => $scope.openDialog('bank-messages') },
@@ -72,11 +72,11 @@ app.component('interbankTransfers', {
 
         $rootScope.$on('BANK_MESSAGE_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['bankMessage'] = row['id']
-            $scope.dialog.remove();
+            if($scope.dialog) $scope.dialog.remove();
         });
         $rootScope.$on('BANK_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['recipientBank'] = row['id']
-            $scope.dialog.remove();
+            if($scope.dialog) $scope.dialog.remove();
         });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------

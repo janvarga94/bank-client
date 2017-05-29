@@ -1,7 +1,7 @@
 'use strict';
 
 app.component('login', {
-    templateUrl: 'login/login.html',
+    templateUrl: 'app/login/login.html',
     controller: function LoginController() {
 
     }

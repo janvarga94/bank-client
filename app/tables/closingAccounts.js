@@ -73,11 +73,11 @@ app.component('closingAccounts', {
 
         $rootScope.$on('BANK_ACCOUNT_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['bankAccount'] = row['id']
-            $scope.dialog.remove();
+            if($scope.dialog) $scope.dialog.remove();
         });
         $rootScope.$on('BANK_ORDER_SELECTED', function (event, row) {
             if (row['id']) $scope.editing['bankOrder'] = row['id']
-            $scope.dialog.remove();
+            if($scope.dialog) $scope.dialog.remove();
         });
 
         //-------------------------------------> filtering, ordering, pagination <----------------------------------------------
